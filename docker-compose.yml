@@ -1,0 +1,6 @@
+web:
+  build: .
+  expose:
+    - 4111
+  ports:
+    - 1234:4111
