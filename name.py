@@ -4,7 +4,7 @@ import redis
 import math
 from werkzeug.wrappers import Request, Response
 
-pool = redis.ConnectionPool(host='docker.neterra.skrill.net', port=6379, db=0)
+pool = redis.ConnectionPool(host='redis-hostname', port=6379, db=0)
 r = redis.Redis(connection_pool=pool)
 
 @Request.application
