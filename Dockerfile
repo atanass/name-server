@@ -1,6 +1,8 @@
 FROM ubuntu:latest
 MAINTAINER Atanas Dichev <dichev.atanas@gmail.com>
 
+ENV FOO bar
+
 RUN apt-get update
 RUN apt-get install python-pip python wget -y
 RUN pip install redis
