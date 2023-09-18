@@ -1,0 +1,59 @@
+version: 2.1
+
+commands:
+  package:
+    steps:
+      - run:
+          name: "Clean"
+          command: "mvn clean"
+      - run:
+          name: "Package"
+          command: "mvn package"
+  test:
+    steps:
+      - run:
+          name: "Test"
+          command: "mvn test"
+  deploy:
+    steps:
+      - run:
+          name: "Deploy"
+          command: "scp target/application.jar user@app-srvc.mycompany.net:/application.jar"
+
+jobs:
+  build:
+    docker:
+      - image: my-builder-image:1.2.3
+    resource_class: medium
+    steps:
+      - test
+      - package
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - target/application.jar
+
+  deploy:
+    executor: deployer
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: ./
+      - deploy
+
+workflows:
+  production:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+
+executors:
+  builder:
+    docker:
+      - image: my-builder-image:1.2.3
+  deployer:
+    docker:
+      - image: my-deployer-image:3.2.1
+
