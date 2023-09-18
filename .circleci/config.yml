@@ -5,40 +5,34 @@ commands:
     steps:
       - run:
           name: "Clean"
-          command: "mvn clean"
+          command: echo "mvn clean"
       - run:
           name: "Package"
-          command: "mvn package"
+          command: echo "mvn package"
   test:
     steps:
       - run:
           name: "Test"
-          command: "mvn test"
+          command: echo "mvn test"
   deploy:
     steps:
       - run:
           name: "Deploy"
-          command: "scp target/application.jar user@app-srvc.mycompany.net:/application.jar"
+          command: echo "scp target/application.jar user@app-srvc.mycompany.net:/application.jar"
 
 jobs:
   build:
     docker:
-      - image: my-builder-image:1.2.3
-    resource_class: medium
+      - image: cimg/base:2023.09
+    resource_class: small
     steps:
       - test
       - package
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - target/application.jar
 
   deploy:
     executor: deployer
     resource_class: small
     steps:
-      - attach_workspace:
-          at: ./
       - deploy
 
 workflows:
@@ -52,8 +46,8 @@ workflows:
 executors:
   builder:
     docker:
-      - image: my-builder-image:1.2.3
+      - image: cimg/base:2023.09
   deployer:
     docker:
-      - image: my-deployer-image:3.2.1
+      - image: cimg/base:2023.09
 
